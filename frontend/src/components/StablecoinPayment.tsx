@@ -7,16 +7,16 @@ import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
  * Mainnet: EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs
  * Testnet: kQD0GKBM8ZbryVk2aESmzfU6b9b_8era_IkvBSELujFZPsyy
  */
-const USDT_MASTER_ADDRESS = {
+export const USDT_MASTER_ADDRESS = {
   mainnet: 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs',
   testnet: 'kQD0GKBM8ZbryVk2aESmzfU6b9b_8era_IkvBSELujFZPsyy',
 };
 
 // 你的收款钱包地址（替换为真实地址）
-const MERCHANT_WALLET = 'YOUR_MERCHANT_TON_WALLET_ADDRESS';
+export const MERCHANT_WALLET = 'YOUR_MERCHANT_TON_WALLET_ADDRESS';
 
 // 当前使用的网络
-const NETWORK: 'mainnet' | 'testnet' = 'testnet';
+export const NETWORK: 'mainnet' | 'testnet' = 'testnet';
 
 interface StablecoinPaymentProps {
   amount: number;       // USDT 金额（如 9.99）
