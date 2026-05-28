@@ -1,0 +1,119 @@
+// Prisma Schema - 数据库模型定义
+// 运行 `npx prisma db push` 同步到数据库
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型
+model User {
+  id          Int       @id @default(autoincrement())
+  telegramId  BigInt    @unique
+  username    String?
+  firstName   String
+  lastName    String?
+  languageCode String?
+  isPremium   Boolean   @default(false)
+  balance     Int       @default(0)  // 应用内积分余额
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  orders      Order[]
+  payments    Payment[]
+
+  @@map("users")
+}
+
+// 商品模型
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  price       Int       // Stars 价格
+  image       String?
+  category    String
+  isActive    Boolean   @default(true)
+  stock       Int       @default(-1) // -1 = 无限库存
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  orderItems  OrderItem[]
+
+  @@map("products")
+}
+
+// 订单模型
+model Order {
+  id          String      @id @default(cuid())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  status      OrderStatus @default(PENDING)
+  totalAmount Int
+  currency    String      @default("XTR") // XTR = Telegram Stars
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  items       OrderItem[]
+  payment     Payment?
+
+  @@map("orders")
+}
+
+// 订单项
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Int     // 下单时的价格快照
+
+  @@map("order_items")
+}
+
+// 支付记录
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String        @unique
+  order             Order         @relation(fields: [orderId], references: [id])
+  userId            Int
+  user              User          @relation(fields: [userId], references: [id])
+  amount            Int
+  currency          String
+  method            PaymentMethod
+  status            PaymentStatus @default(PENDING)
+  telegramPaymentId String?       // Telegram 支付 charge ID
+  tonTxHash         String?       // TON 交易 hash
+  payload           String?       // 自定义数据
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@map("payments")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  TELEGRAM_STARS
+  TON
+  STRIPE
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}

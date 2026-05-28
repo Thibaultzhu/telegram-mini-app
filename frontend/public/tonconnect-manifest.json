@@ -1,0 +1,7 @@
+{
+  "url": "https://your-miniapp-domain.com/tonconnect-manifest.json",
+  "name": "Your Mini App Name",
+  "iconUrl": "https://your-miniapp-domain.com/icon.png",
+  "termsOfUseUrl": "https://your-miniapp-domain.com/terms",
+  "privacyPolicyUrl": "https://your-miniapp-domain.com/privacy"
+}
